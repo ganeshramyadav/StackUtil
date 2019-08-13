@@ -52,7 +52,6 @@ class DbUtils
         return $query;
     }
 
-
     public static function generateKeyValueWithOperators($whereResult)
     {
         $whereArray = [];
