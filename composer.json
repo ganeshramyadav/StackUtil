@@ -1,12 +1,14 @@
 {
     "name":              "stackutil/utils",
-    "description":       "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
+    "description":       "Lightweight utility to manage the data from database by using PHP",
     "type":              "library",
     "license":           "MIT",
+    "version":            "0.1",
     
     "keywords":          [
 		"stack",
-        "utils"
+        "utils",
+        "DbUtils"
     ],
     "authors": [
         {
@@ -16,7 +18,10 @@
         }
     ],
     "require": {
-        "php": "^7.1"
+        "php": "^7.1",
+        "illuminate/database": "5.8.*",
+        "illuminate/support": "5.8.*",
+        "illuminate/http": "5.8.*"
     },
     
     "autoload": {
