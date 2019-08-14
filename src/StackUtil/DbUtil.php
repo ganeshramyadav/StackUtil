@@ -2,6 +2,9 @@
 
 namespace StackUtil\Utils;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 class DbUtils
 {    
     public static function generateQuery($objName,$idOrKey=null, $select = null, $where = null, $orderBy = null)
