@@ -26,8 +26,8 @@ class Utility
 
 	public static function objArraySearch($array, $index, $value)
     {
-        foreach($array as $arrayInf) {
-            if($arrayInf->{$index} == $value) {
+		foreach($array as $arrayInf) {
+            if($arrayInf[$index] == $value) {
                 return $arrayInf;
             }
         }
