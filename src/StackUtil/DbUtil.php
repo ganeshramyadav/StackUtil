@@ -87,12 +87,12 @@ class DbUtils
                 $whereArray[$index]['operator']  = '=' ;
                 $whereArray[$index]['value']   = $record[1];
             }elseif(strpos($whereKey, '<') == true){
-                $record = explode('<',$whereKe);
+                $record = explode('<',$whereKey);
                 $whereArray[$index]['key']  = $record[0] ;
                 $whereArray[$index]['operator']  = '<' ;
                 $whereArray[$index]['value']   = $record[1];
             }elseif(strpos($whereKey, '>') == true){
-                $record = explode('>',$whereKe);
+                $record = explode('>',$whereKey);
                 $whereArray[$index]['key']  = $record[0];
                 $whereArray[$index]['operator']  = '>' ;
                 $whereArray[$index]['value']   = $record[1];
