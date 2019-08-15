@@ -40,6 +40,10 @@ class ApiUtils
         curl_close($curl);
         
         $res = json_decode($result,true);
+        if(empty($res) || $res === null)
+        {
+            $res = $result;
+        }
         return response()->json($res, $httpcode);
     }
     
