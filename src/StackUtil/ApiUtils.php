@@ -38,11 +38,9 @@ class ApiUtils
             /* die("Connection Failure"); */
         }
         curl_close($curl);
-        if($httpcode == 200){
-            return response()->json(['message' => 'Authorized'], 200);
-        }else{
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+        
+        $res = json_decode($result,true);
+        return response()->json($res, $httpcode);
     }
     
 }
