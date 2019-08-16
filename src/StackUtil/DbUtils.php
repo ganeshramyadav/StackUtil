@@ -118,4 +118,15 @@ class DbUtils
         }
         return $query;
     }
+
+    public static function generateInsert($objName, $data){
+        $query = DB::table($objName);
+        $query = $query->insert($data);
+        // return $query = $query->insertGetId($data);
+        if($query == true){
+            return "1";
+        }else{
+            return "0";
+        }
+    }
 }
