@@ -5,7 +5,7 @@ namespace StackUtil\Utils;
 
 class Utility
 {    
-	const idLength = 24;
+	const idLength = 20;
 	const keySplitlength = 4;
 	const keyLength =16;
 	const idStr = "1234567890abcdefghijklmnopqrstuvwxyz";
