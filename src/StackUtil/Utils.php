@@ -5,7 +5,7 @@ namespace StackUtil\Utils;
 
 class Utility
 {    
-	const idLength = 12;
+	const idLength = 24;
 	const keySplitlength = 4;
 	const keyLength =16;
 	const idStr = "1234567890abcdefghijklmnopqrstuvwxyz";
@@ -17,8 +17,10 @@ class Utility
 	}
 	
 	public static function generateId($firstChar, $shortName){
-		return $firstChar;
-	}
+		$id = substr(str_shuffle(self::idStr),0,self::idLength);
+		$id = $firstChar.$shortName.$id;
+		return $id;
+   }
 
 	public static function generateKey($shortName){
 		return $shortName;
