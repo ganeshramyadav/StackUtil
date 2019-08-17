@@ -1,7 +1,7 @@
 <?php
 
 namespace StackUtil\Utils;
-
+use Exception;
 class ApiUtils
 {
     public static function Request($method, $url, array $head, $body = null)
@@ -29,16 +29,15 @@ class ApiUtils
         curl_setopt($curl, CURLOPT_HTTPHEADER, $head);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        
+
         // EXECUTE:
         $result = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        if(!$result){
-            return response()->json(['error' => 'Service Unavailable'], 503);
-            /* die("Connection Failure"); */
+        if(curl_errno($curl)){
+            throw new Exception(curl_error($curl));
         }
+        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
-        
+
         $res = json_decode($result,true);
         if(empty($res) || $res === null)
         {
@@ -46,5 +45,5 @@ class ApiUtils
         }
         return response()->json($res, $httpcode);
     }
-    
+
 }
