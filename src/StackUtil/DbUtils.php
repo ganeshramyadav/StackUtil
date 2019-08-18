@@ -11,6 +11,7 @@ class DbUtils
     {
         $query = DB::table($objName);
         if(!empty($idOrKey) || $idOrKey != null){
+            
             $query = DbUtils::generateSelect($query,"all");
             $result = $query->where(['id'=> $idOrKey])->orwhere(['key'=>$idOrKey])->first();
 
@@ -27,12 +28,14 @@ class DbUtils
                 $query = DbUtils::generateOrderSort($query, $orderBy);
             }
            
+        }elseif(!empty($select) || $select != null){
+            $query = DbUtils::generateSelect($query, $select);
         }
         $query = $query->get();
         return $query;
     }
 
-    public static function generateSelect($query,$select = null)
+    public static function generateSelect($query = null ,$select = null)
     {
         if(empty($select) || $select == null)
         {
@@ -42,16 +45,32 @@ class DbUtils
         }else{
             $selectResult = explode( ",", $select );
         }
-        $query->select($selectResult);
-        return $query;
+
+        if(!empty($query) && $query != null){
+            $query->select($selectResult);
+            return $query;
+        }else{
+            $query = $selectResult;
+            return $query;
+        }
+        
     }
 
-    public static function generateWhere($query,$where){
+    public static function generateWhere($query = null ,$where){
         $whereResult = explode( ",", $where );
-        $whereArray = DbUtils::generateKeyValueWithOperators($whereResult);
-        foreach($whereArray as $whereObject)
-        {
-            $query->where($whereObject['key'], $whereObject['operator'] , $whereObject['value']);
+        if(!empty($query) && $query != null){
+            $whereArray = DbUtils::generateKeyValueWithOperators($whereResult);
+            foreach($whereArray as $whereObject)
+            {
+                $query->where($whereObject['key'], $whereObject['operator'] , $whereObject['value']);
+            }
+        }else{
+            $array = array();
+            foreach($whereResult as $value){
+                $query = explode( "=", $value );
+                array_push($array,$query[0]);
+            }
+            $query = $array;
         }
         return $query;
     }
@@ -105,22 +124,45 @@ class DbUtils
         return $whereArray;
     }
 
-    public static function generateOrderSort($query, $orderBy)
+    public static function generateOrderSort($query = null, $orderBy)
     {
         if($orderBy[0] == '-'){
             $record = explode('-',$orderBy);
-            $query = $query->orderBy($record[1], 'desc');
+            if(!empty($query) && $query != null){
+                $query = $query->orderBy($record[1], 'desc');
+            }else{
+                $query = $record[1];
+            }
         }elseif($orderBy[0] == ' '){
             $record = explode(' ',$orderBy);
-            $query = $query->orderBy($record[1]);
+            if(!empty($query) && $query != null){
+                $query = $query->orderBy($record[1], 'asc');
+            }else{
+                $query = $record[1];
+            }
         }else{
-            $query = $query->orderBy($orderBy);
+            if(!empty($query) && $query != null){
+                $query = $query->orderBy($orderBy);
+            }else{
+                $query = $record[1];
+            }
+            
         }
         return $query;
     }
 
     public static function generateInsert($objName, $data){
         $query = DB::table($objName);
-        return $query = $query->insert($data);
+        $query = $query->insert($data);
+        return $query;
+    }
+
+    public static function generateUpdateRecord($objName, $where, $data){
+        $query = DB::table($objName);
+       /*  DB::table('Home_Content')->where('id',1)->update(
+            [$_POST['name'] => $_POST['content']],
+            [$_POST['title'] => $_POST['titleMsg']]
+            ); */
+        return $query;
     }
 }
