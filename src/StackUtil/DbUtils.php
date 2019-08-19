@@ -4,29 +4,29 @@ namespace StackUtil\Utils;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use StackUtil\Utils\Utility;
 
 class DbUtils
-{    
+{
     public static function generateQuery($objName,$idOrKey=null, $select = null, $where = null, $orderBy = null)
     {
         $query = DB::table($objName);
         if(!empty($idOrKey) || $idOrKey != null){
             $query = DbUtils::generateSelect($query,"all");
             $result = $query->where(['id'=> $idOrKey])->orwhere(['key'=>$idOrKey])->first();
-
             if (!empty($result)){
                 return $result;
             }else{
                 throw (new ModelNotFoundException)->setModel($objName, $idOrKey);
             }
-        }elseif(!empty($where) || $where != null){
+        }else{
             $query = DbUtils::generateSelect($query, $select);
-            $query = DbUtils::generateWhere($query, $where);
-
+            if(!empty($where) || $where != null){
+                $query = DbUtils::generateWhere($query, $where);
+            }
             if(!empty($orderBy) || $orderBy != null){
                 $query = DbUtils::generateOrderSort($query, $orderBy);
             }
-           
         }
         $query = $query->get();
         return $query;
@@ -118,4 +118,23 @@ class DbUtils
         }
         return $query;
     }
+
+    public static function generateInsert($objName, $data){
+        $query = DB::table($objName);
+        $query = $query->insert($data);
+        return $query;
+    }
+
+    public static function generateUpdateRecord($request, $objName, $idOrKey)
+    {
+        $data = $request->all();
+        unset($data['id']);
+        unset($data['key']);
+
+        $query = DB::table($objName);
+        $query = $query->where(['id'=> $idOrKey])->orwhere(['key'=>$idOrKey]);
+        $query = $query->update($data);
+        return $query;
+    }
+  
 }
