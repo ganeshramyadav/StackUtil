@@ -4,7 +4,6 @@ namespace StackUtil\Utils;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use StackUtil\Utils\Utility;
 
 class DbUtils
 {
@@ -26,6 +25,8 @@ class DbUtils
             }
             if(!empty($orderBy) || $orderBy != null){
                 $query = DbUtils::generateOrderSort($query, $orderBy);
+            }else{
+                $query = DbUtils::generateOrderSort($query, '-created_at');
             }
         }
         $query = $query->get();
@@ -51,7 +52,15 @@ class DbUtils
         $whereArray = DbUtils::generateKeyValueWithOperators($whereResult);
         foreach($whereArray as $whereObject)
         {
-            $query->where($whereObject['key'], $whereObject['operator'] , $whereObject['value']);
+            if(strpos($whereObject['value'],':') == true)
+            {
+                $whereOrResult['value'] = explode( ":", $whereObject['value'] );
+                foreach($whereOrResult['value'] as $whereOrArray['value']){
+                    $query->orWhere($whereObject['key'], $whereObject['operator'] , $whereOrArray['value']);
+                }
+            }else{
+                $query->where($whereObject['key'], $whereObject['operator'] , $whereObject['value']);
+            }
         }
         return $query;
     }
@@ -61,6 +70,7 @@ class DbUtils
         $whereArray = [];
         $index = 0;
         foreach($whereResult as $whereKey){
+
             if(strpos($whereKey,'!=') == true)
             {
                 $record = explode('!=',$whereKey);
@@ -105,16 +115,20 @@ class DbUtils
         return $whereArray;
     }
 
-    public static function generateOrderSort($query, $orderBy)
+    public static function generateOrderSort($query, $orderByArray)
     {
-        if($orderBy[0] == '-'){
-            $record = explode('-',$orderBy);
-            $query = $query->orderBy($record[1], 'desc');
-        }elseif($orderBy[0] == ' '){
-            $record = explode(' ',$orderBy);
-            $query = $query->orderBy($record[1]);
-        }else{
-            $query = $query->orderBy($orderBy);
+        $orderByResult = explode( ",", $orderByArray );
+        foreach($orderByResult as $orderBy)
+        {
+            if($orderBy[0] == '-'){
+                $record = explode('-',$orderBy);
+                $query = $query->orderBy($record[1], 'desc');
+            }elseif($orderBy[0] == ' '){
+                $record = explode(' ',$orderBy);
+                $query = $query->orderBy($record[1]);
+            }else{
+                $query = $query->orderBy($orderBy);
+            }
         }
         return $query;
     }
@@ -130,11 +144,10 @@ class DbUtils
         $data = $request->all();
         unset($data['id']);
         unset($data['key']);
-
         $query = DB::table($objName);
         $query = $query->where(['id'=> $idOrKey])->orwhere(['key'=>$idOrKey]);
         $query = $query->update($data);
         return $query;
     }
-  
+
 }
