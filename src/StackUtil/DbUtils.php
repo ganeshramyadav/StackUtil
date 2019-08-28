@@ -139,7 +139,7 @@ class DbUtils
         return $query;
     }
 
-    public static function generateUpdateRecord($request, $objName, $idOrKey)
+    /* public static function generateUpdateRecord($request, $objName, $idOrKey)
     {
         $data = $request->all();
         unset($data['id']);
@@ -147,6 +147,34 @@ class DbUtils
         $query = DB::table($objName);
         $query = $query->where(['id'=> $idOrKey])->orwhere(['key'=>$idOrKey]);
         $query = $query->update($data);
+        return $query;
+    } */
+
+    public static function generateUpdateRecord($request, $objName, $idOrKey)
+    {
+        $data = $request->all();
+        unset($data['id']);
+        unset($data['key']);
+        if(isset($data['object__r'])){
+            unset($data['object__r']);
+        }
+        $query = DB::table($objName);
+        $query = $query->orwhere(['id'=> $idOrKey])->orwhere(['key'=>$idOrKey]);
+        $query = $query->update($data);
+        return $query;
+    }
+
+    public static function generateDeleteRecord($objName, $idOrKey)
+    {
+        $query = DB::table($objName);
+        $query = $query->orwhere(['id'=>$idOrKey])->orwhere(['key'=>$idOrKey])->delete();
+        return $query;
+    }
+    
+    public static function generateDeleteBulkRecord($objName, $columnName, $idOrKey)
+    {
+        $query = DB::table($objName);
+        $query = $query->orwhere([$columnName=>$idOrKey])->delete();
         return $query;
     }
 
