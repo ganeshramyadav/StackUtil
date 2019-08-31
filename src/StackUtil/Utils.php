@@ -36,6 +36,16 @@ class Utility
             }
         }
         return null;
+	}
+	
+	public static function getBearerToken($token) {
+        // HEADER: Get the access token from the header
+        if (!empty($token)) {
+            if (preg_match('/Bearer\s(\S+)/', $token, $matches)) {
+                return $matches[1];
+            }
+        }
+        return null;
     }
 
 }
