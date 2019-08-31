@@ -3,7 +3,7 @@
     "description":       "Lightweight utility to manage the data from database by using PHP",
     "type":              "library",
     "license":           "MIT",
-    "version":            "0.1",
+    "version":            "1.0.1",
     
     "keywords":          [
 		"stack",
